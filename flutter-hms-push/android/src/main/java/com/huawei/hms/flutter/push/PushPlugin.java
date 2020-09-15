@@ -43,9 +43,9 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
  *
  * @since 4.0.4
  */
-public class PushPlugin implements FlutterPlugin, MethodCallHandler {
+public class PushPlugin implements  MethodCallHandler {
 
-    private MethodChannel channel;
+//    private MethodChannel channel;
     private static volatile Context context;
 
     public static Context getContext() {
@@ -56,29 +56,35 @@ public class PushPlugin implements FlutterPlugin, MethodCallHandler {
         PushPlugin.context = context;
     }
 
-    @Override
-    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), Channel.METHOD_CHANNEL.id());
-        channel.setMethodCallHandler(this);
-        PushPlugin.setContext(flutterPluginBinding.getApplicationContext());
-
-        EventChannel tokenEventChannel = new EventChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), Channel.TOKEN_CHANNEL.id());
-        tokenEventChannel.setStreamHandler(new TokenStreamHandler(context));
-
-        EventChannel dataMessageEventChannel = new EventChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), Channel.DATA_MESSAGE_CHANNEL.id());
-        dataMessageEventChannel.setStreamHandler(new DataMessageStreamHandler(context));
-    }
+//    @Override
+//    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+//        channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), Channel.METHOD_CHANNEL.id());
+//        channel.setMethodCallHandler(this);
+//        PushPlugin.setContext(flutterPluginBinding.getApplicationContext());
+//
+//        EventChannel tokenEventChannel = new EventChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), Channel.TOKEN_CHANNEL.id());
+//        tokenEventChannel.setStreamHandler(new TokenStreamHandler(context));
+//
+//        EventChannel dataMessageEventChannel = new EventChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), Channel.DATA_MESSAGE_CHANNEL.id());
+//        dataMessageEventChannel.setStreamHandler(new DataMessageStreamHandler(context));
+//    }
 
     public static void registerWith(Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), Channel.METHOD_CHANNEL.id());
         channel.setMethodCallHandler(new PushPlugin());
         context = registrar.context();
+
+        EventChannel tokenEventChannel = new EventChannel(registrar.messenger(), Channel.TOKEN_CHANNEL.id());
+        tokenEventChannel.setStreamHandler(new TokenStreamHandler(context));
+
+        EventChannel dataMessageEventChannel = new EventChannel(registrar.messenger(), Channel.DATA_MESSAGE_CHANNEL.id());
+        dataMessageEventChannel.setStreamHandler(new DataMessageStreamHandler(context));
     }
 
-    @Override
-    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        if (channel != null) channel.setMethodCallHandler(null);
-    }
+//    @Override
+//    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+//        if (channel != null) channel.setMethodCallHandler(null);
+//    }
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
