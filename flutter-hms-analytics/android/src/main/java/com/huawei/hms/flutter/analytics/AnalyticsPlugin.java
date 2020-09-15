@@ -28,17 +28,25 @@ import io.flutter.plugin.common.MethodChannel.Result;
 
 import java.util.Map;
 
-public class AnalyticsPlugin implements FlutterPlugin, MethodCallHandler {
+public class AnalyticsPlugin implements  MethodCallHandler {
     private String TAG = AnalyticsPlugin.class.getSimpleName();
 
     private AnalyticsService analyticsService;
 
-    @Override
-    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        final MethodChannel channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(),
-            "com.huawei.hms.flutter.analytics");
-        analyticsService = new AnalyticsService(flutterPluginBinding.getApplicationContext());
-        channel.setMethodCallHandler(this);
+    public AnalyticsPlugin(PluginRegistry.Registrar registrar) {
+        this.analyticsService = new AnalyticsService(registrar.context());
+    }
+    //    @Override
+//    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+//        final MethodChannel channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(),
+//            "com.huawei.hms.flutter.analytics");
+//        analyticsService = new AnalyticsService(flutterPluginBinding.getApplicationContext());
+//        channel.setMethodCallHandler(this);
+//    }
+
+    public static void registerWith(PluginRegistry.Registrar registrar) {
+        final MethodChannel channel = new MethodChannel(registrar.messenger(),"com.huawei.hms.flutter.analytics");
+        channel.setMethodCallHandler(new AnalyticsPlugin(registrar));
     }
 
     @Override
@@ -115,11 +123,11 @@ public class AnalyticsPlugin implements FlutterPlugin, MethodCallHandler {
         result.notImplemented();
     }
 
-    @Override
-    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        Log.i(TAG, "onDetachedFromEngine is called.");
-        analyticsService.unRegHmsSvcEvent(null);
-    }
+//    @Override
+//    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+//        Log.i(TAG, "onDetachedFromEngine is called.");
+//        analyticsService.unRegHmsSvcEvent(null);
+//    }
 
     private enum Methods {
         CLEAR_CACHED_DATA("clearCachedData"),
