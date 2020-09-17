@@ -31,6 +31,7 @@ public class IapPlugin implements FlutterPlugin, ActivityAware {
     private MethodChannel mMethodChannel;
     private MethodCallHandlerImpl mMethodCallHandler;
 
+
     public static void registerWith(final Registrar registrar) {
         final IapPlugin instance = new IapPlugin();
         final Activity activity = registrar.activity();
@@ -38,6 +39,9 @@ public class IapPlugin implements FlutterPlugin, ActivityAware {
         instance.onAttachedToEngine(messenger);
         instance.mMethodCallHandler = new MethodCallHandlerImpl(activity);
         instance.mMethodChannel.setMethodCallHandler(instance.mMethodCallHandler);
+
+        //Activity listeners
+        registrar.addActivityResultListener(instance.mMethodCallHandler);
     }
 
     private void onAttachedToEngine(@NonNull BinaryMessenger messenger) {
