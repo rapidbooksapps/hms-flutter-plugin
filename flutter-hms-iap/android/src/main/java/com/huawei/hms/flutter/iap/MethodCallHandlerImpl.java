@@ -231,6 +231,10 @@ public class MethodCallHandlerImpl implements MethodCallHandler, ActivityResultL
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(mResultsForRequests.size()==0||mResultsForRequests.get(requestCode)==null){
+            return  false;
+        }
+        
         final Result result = Objects.requireNonNull(mResultsForRequests.get(requestCode)).first;
         final int requestType = Objects.requireNonNull(mResultsForRequests.get(requestCode)).second;
 
